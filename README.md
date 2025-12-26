@@ -1,93 +1,263 @@
-## Os 3 Tipos de Workflows de IA
+# 🏦 NeoBank AI Assistant
 
-- Caso Prático: Assistente Bancário Inteligente
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![LangChain](https://img.shields.io/badge/🦜-LangChain-green)](https://langchain.com/)
+[![LangGraph](https://img.shields.io/badge/🔗-LangGraph-orange)](https://langchain-ai.github.io/langgraph/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
-#### 📖 O Problema de Negócio
+> **Projeto educacional** demonstrando a evolução dos workflows de IA: do chatbot simples ao agente autônomo.
 
-##### Contexto
+## 📖 Sobre o Projeto
 
-Você é Engenheiro de IA no NeoBank, um banco digital em crescimento. A equipe de atendimento está sobrecarregada e a diretoria quer implementar um assistente inteligente para ajudar os clientes.
+O NeoBank AI Assistant é um assistente bancário inteligente que demonstra **3 tipos de workflows de IA**, cada um com diferentes níveis de autonomia e complexidade:
 
-##### O Desafio
+| Workflow           | Descrição                      | Quando Usar                   |
+| ------------------ | ------------------------------ | ----------------------------- |
+| 🔵 **Non-Agentic** | Pergunta → LLM → Resposta      | FAQs, conceitos, dicas gerais |
+| 🟢 **Agentic**     | Usa ferramentas + padrão ReAct | Consultas, análises simples   |
+| 🔴 **AI Agent**    | Autônomo com LangGraph         | Planejamento complexo         |
 
-Os clientes fazem perguntas como:
+## 🏗️ Arquitetura
 
-- "Qual o limite do meu cartão?"
-- "Quero aumentar meu limite"
-- "Analise meus gastos do mês e me dê sugestões de economia"
-- "Organize minhas finanças e crie um plano para eu guardar R$ 5.000 em 6 meses"
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        NeoBank AI Assistant                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│    CLI (Rich)  ───►  Workflows  ───►  Tools  ───►  Data Layer       │
+│                                                                     │
+│       ┌─────────────┐   ┌─────────────┐   ┌─────────────┐           │
+│       │ Non-Agentic │   │   Account   │   │   Models    │           │
+│       │   Agentic   │   │    Card     │   │  (Pydantic) │           │
+│       │  AI Agent   │   │  Analysis   │   │             │           │
+│       │ (LangGraph) │   │  Planning   │   │  Mock DB    │           │
+│       └─────────────┘   └─────────────┘   └─────────────┘           │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
-##### Perceba que essas perguntas têm níveis diferentes de complexidade:
+## 📂 Estrutura do Projeto
 
-| Pergunta                   | Complexidade | Tipo de Resposta        |
-| -------------------------- | ------------ | ----------------------- |
-| "Qual meu limite?"         | Simples      | Consulta direta         |
-| "Quero aumentar limite"    | Média        | Processo com regras     |
-| "Analise meus gastos"      | Alta         | Análise + Recomendações |
-| "Crie um plano financeiro" | Muito Alta   | Planejamento autônomo   |
-
-##### A Grande Lição
-
-Não existe bala de prata. Cada tipo de workflow é adequado para um nível de complexidade. Usar um AI Agent para responder "qual meu saldo?" é como usar um canhão para matar uma mosca — funciona, mas é desperdício de recursos.
-
-### 🏗️ Arquitetura Base do Projeto
-
-Antes de implementar os workflows, vamos criar a infraestrutura comum que todos usarão.
-
-#### Estrutura de Pastas
-
-```bash
+```
 neobank-assistant/
-│
-├── config/
-│ └── settings.py # Configurações e variáveis de ambiente
-│
-├── data/
-│ └── mock_database.py # Dados simulados do cliente
-│
-├── tools/
-│ ├── **init**.py
-│ ├── account_tools.py # Ferramentas de conta
-│ ├── card_tools.py # Ferramentas de cartão
-│ ├── analysis_tools.py # Ferramentas de análise
-│ └── planning_tools.py # Ferramentas de planejamento
-│
-├── workflows/
-│ ├── **init**.py
-│ ├── non_agentic.py # Implementação Non-Agentic
-│ ├── agentic.py # Implementação Agentic Workflow
-│ └── ai_agent.py # Implementação AI Agent
-│
-├── main.py # Ponto de entrada
-└── requirements.txt # Dependências
+├── src/neobank_assistant/     # Pacote principal
+│   ├── cli/                   # Interface de comando
+│   ├── core/                  # Config + Exceptions
+│   ├── data/                  # Models + Mock Database
+│   ├── tools/                 # 11 ferramentas LangChain
+│   └── workflows/             # 3 tipos de workflow
+├── tests/                     # Testes (unit + integration)
+├── docs/                      # Documentação + Tutoriais
+├── examples/                  # Exemplos de uso
+├── scripts/                   # Scripts de automação
+└── pyproject.toml            # Configuração (PEP 621)
 ```
 
-### 📦 Parte 1: Preparação do Ambiente
+## 🚀 Instalação
 
-#### 1.1 Dependências do Projeto
+### Opção 1: Com Poetry (Recomendado)
 
 ```bash
-# requirements.txt
+# Clone o repositório
+git clone https://github.com/alevtelles/neobank-assistant.git
+cd neobank-assistant
 
-# Framework principal para LLMs
-langchain==0.2.16
-langchain-openai==0.1.25
-langchain-community==0.2.16
+# Instale dependências
+poetry install
 
-# Framework para agentes com grafos de estado
-langgraph==0.2.28
+# Configure ambiente
+cp .env.example .env
+# Edite .env com sua OPENAI_API_KEY
 
-# Utilitários
-python-dotenv==1.0.1
-pydantic==2.9.2
-rich==13.8.1  # Para output bonito no terminal
+# Execute
+poetry run neobank
 ```
 
-##### Por que cada dependência?
+### Opção 2: Com pip
 
-- <code style="background-color:#f3f4f6; color:#b91c1c; padding:2px 6px; border-radius:6px;">langchain</code> : Framework que padroniza a interação com LLMs e fornece abstrações para chains, tools e agents
-- <code style="background-color:#f3f4f6; color:#b91c1c; padding:2px 6px; border-radius:6px;">langchain-openai</code> : Integração específica com modelos da OpenAI
-- <code style="background-color:#f3f4f6; color:#b91c1c; padding:2px 6px; border-radius:6px;">langGraph</code> : Extensão do LangChain para criar workflows como grafos de estado (essencial para AI Agents)
-- <code style="background-color:#f3f4f6; color:#b91c1c; padding:2px 6px; border-radius:6px;">python-dotenv </code>: Carrega variáveis de ambiente de arquivos .env (segurança para API keys)
-- <code style="background-color:#f3f4f6; color:#b91c1c; padding:2px 6px; border-radius:6px;">pydantic </code>: Validação de dados com tipos (usado internamente pelo LangChain)
-- <code style="background-color:#f3f4f6; color:#b91c1c; padding:2px 6px; border-radius:6px;">rich</code>: Biblioteca para output formatado no terminal (facilita debug e demonstrações)
+```bash
+# Clone o repositório
+git clone https://github.com/alevtelles/neobank-assistant.git
+cd neobank-assistant
+
+# Crie ambiente virtual
+python -m venv .venv
+source .venv/bin/activate  # Linux/Mac
+# .venv\Scripts\activate   # Windows
+
+# Instale dependências
+pip install -e ".[dev]"
+
+# Configure ambiente
+cp .env.example .env
+# Edite .env com sua OPENAI_API_KEY
+
+# Execute
+neobank
+```
+
+### Opção 3: Setup Automático
+
+```bash
+chmod +x scripts/setup.sh
+./scripts/setup.sh
+```
+
+## ⚙️ Configuração
+
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+# OpenAI (obrigatório)
+OPENAI_API_KEY=sk-sua-chave-aqui
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_TEMPERATURE=0.1
+
+# Aplicação
+APP_ENV=development
+LOG_LEVEL=INFO
+```
+
+## 🎮 Uso
+
+### Menu Interativo
+
+```bash
+# Com Poetry
+poetry run neobank
+
+# Com pip (ambiente ativado)
+neobank
+
+# Com Make
+make run
+```
+
+### Programático
+
+```python
+from neobank_assistant import NonAgenticAssistant, AgenticAssistant, AIAgentAssistant
+
+# Non-Agentic (simples)
+assistant = NonAgenticAssistant()
+response = assistant.chat("O que é a regra 50-30-20?")
+
+# Agentic (com ferramentas)
+agent = AgenticAssistant()
+result = agent.chat("Qual é o saldo da minha conta?")
+
+# AI Agent (autônomo)
+ai_agent = AIAgentAssistant()
+result = ai_agent.execute("Organize minhas finanças para guardar R$ 5.000 em 6 meses")
+```
+
+## 🔧 Ferramentas Disponíveis
+
+| Categoria       | Ferramenta                     | Descrição                        |
+| --------------- | ------------------------------ | -------------------------------- |
+| 💰 **Account**  | `get_account_balance`          | Consulta saldo por tipo de conta |
+|                 | `get_all_balances`             | Visão geral de todas as contas   |
+|                 | `get_customer_profile`         | Perfil completo do cliente       |
+| 💳 **Card**     | `get_card_info`                | Informações do cartão            |
+|                 | `request_limit_increase`       | Solicita aumento de limite       |
+| 📊 **Analysis** | `analyze_spending_by_category` | Análise de gastos por categoria  |
+|                 | `get_spending_insights`        | Insights e recomendações         |
+|                 | `compare_periods`              | Compara gastos entre períodos    |
+| 📋 **Planning** | `calculate_savings_plan`       | Plano de poupança                |
+|                 | `create_budget_recommendation` | Orçamento 50-30-20               |
+|                 | `analyze_financial_health`     | Diagnóstico financeiro           |
+
+## 🧪 Testes
+
+```bash
+# Todos os testes
+make test
+
+# Com cobertura
+make test-cov
+
+# Apenas unitários
+make test-unit
+```
+
+## 📏 Qualidade de Código
+
+```bash
+# Lint
+make lint
+
+# Formatar
+make format
+
+# Type check
+make type-check
+
+# Tudo junto
+make check
+```
+
+## 📦 Build
+
+```bash
+# Gera pacote (wheel + sdist)
+make build
+
+# Publica no TestPyPI
+make publish-test
+
+# Publica no PyPI
+make publish
+```
+
+## 📚 Material Didático
+
+O tutorial completo está em `docs/tutorials/modulo-workflows-ia.md` com:
+
+- ✅ Explicação teórica dos 3 tipos de workflow
+- ✅ Diagramas de arquitetura
+- ✅ Código comentado linha por linha
+- ✅ Exercícios práticos
+- ✅ Comparativos e trade-offs
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -m 'feat: adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
+
+### Padrão de Commits
+
+Usamos [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` Nova funcionalidade
+- `fix:` Correção de bug
+- `docs:` Documentação
+- `refactor:` Refatoração
+- `test:` Testes
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja [LICENSE](LICENSE) para mais detalhes.
+
+## 👤 Autor
+
+**Alexsander Valente**
+
+- Website: [alexsander.app.br](https://alexsander.app.br)
+- GitHub: [@alevtelles](https://github.com/alevtelles)
+- Email: contato@alexsander.app.br
+
+## 🙏 Agradecimentos
+
+- [LangChain](https://langchain.com/) - Framework para LLMs
+- [LangGraph](https://langchain-ai.github.io/langgraph/) - Grafos de estado para agentes
+- [OpenAI](https://openai.com/) - Modelos de linguagem
+- [Pydantic](https://docs.pydantic.dev/) - Validação de dados
+- [Rich](https://rich.readthedocs.io/) - Terminal bonito
+
+---
+
+⭐ **Se este projeto te ajudou, deixe uma estrela!**
