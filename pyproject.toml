@@ -1,0 +1,220 @@
+# ============================================================
+# NEOBANK AI ASSISTANT - Configuração do Projeto
+# ============================================================
+# Padrão moderno PEP 517 / 518 + PEP 621
+# Compatível com pip, Poetry, Hatch, CI/CD e PyPI
+# ============================================================
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# ============================================================
+# METADADOS DO PROJETO
+# ============================================================
+
+[project]
+name = "neobank-assistant"
+version = "1.0.0"
+description = "Assistente bancário inteligente demonstrando workflows modernos de IA"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Alexsander Valente", email = "contato@alexsander.app.br" }]
+
+keywords = [
+    "ai",
+    "llm",
+    "langchain",
+    "langgraph",
+    "agents",
+    "banking",
+    "chatbot",
+    "rag",
+    "openai",
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Education",
+]
+
+# ============================================================
+# DEPENDÊNCIAS PRINCIPAIS (RUNTIME)
+# ============================================================
+
+dependencies = [
+    "langchain>=0.2.16",
+    "langchain-openai>=0.1.25",
+    "langchain-community>=0.2.16",
+    "langgraph>=0.2.28",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.9.2",
+    "rich>=13.8.1",
+]
+
+# ============================================================
+# DEPENDÊNCIAS OPCIONAIS (EXTRAS)
+# ============================================================
+
+[project.optional-dependencies]
+
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+    "pre-commit>=3.7.0",
+    "ipython>=8.0.0",
+]
+
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+]
+
+notebooks = ["jupyter>=1.0.0", "ipykernel>=6.29.0"]
+
+# Extra agregador (sem auto-dependência)
+all = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+    "pre-commit>=3.7.0",
+    "ipython>=8.0.0",
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+    "jupyter>=1.0.0",
+    "ipykernel>=6.29.0",
+]
+
+# ============================================================
+# URLs DO PROJETO
+# ============================================================
+
+[project.urls]
+Homepage = "https://alexsander.app.br"
+Documentation = "https://github.com/alevtelles/neobank-assistant"
+Repository = "https://github.com/alevtelles/neobank-assistant"
+Issues = "https://github.com/alevtelles/neobank-assistant/issues"
+
+# ============================================================
+# CLI (ENTRYPOINT)
+# ============================================================
+
+[project.scripts]
+neobank = "neobank_assistant.cli.main:main"
+
+# ============================================================
+# POETRY (somente para env + deps)
+# ============================================================
+
+[tool.poetry]
+packages = [{ include = "neobank_assistant", from = "src" }]
+
+# ============================================================
+# HATCH (BUILD)
+# ============================================================
+
+[tool.hatch.build.targets.wheel]
+packages = ["neobank_assistant"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/docs", "/examples"]
+
+# ============================================================
+# RUFF (LINTER + FORMATTER)
+# ============================================================
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4", "UP", "ARG", "SIM"]
+ignore = ["E501", "B008", "B009"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["neobank_assistant"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# ============================================================
+# MYPY (TYPE CHECKING)
+# ============================================================
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "langchain.*",
+    "langchain_openai.*",
+    "langchain_community.*",
+    "langgraph.*",
+]
+ignore_missing_imports = true
+
+# ============================================================
+# PYTEST
+# ============================================================
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+python_classes = ["Test*"]
+addopts = ["-v", "--strict-markers", "--tb=short", "-ra"]
+
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow tests that call external APIs",
+]
+
+filterwarnings = ["ignore::DeprecationWarning"]
+
+# ============================================================
+# COVERAGE
+# ============================================================
+
+[tool.coverage.run]
+source = ["src/neobank_assistant"]
+branch = true
+omit = ["*/tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+show_missing = true
+fail_under = 70

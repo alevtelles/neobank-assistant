@@ -1,0 +1,128 @@
+# ============================================================
+# NEOBANK AI ASSISTANT - .gitignore
+# ============================================================
+
+# ==================== Python ====================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ==================== Virtual Environments ====================
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# ==================== IDE / Editors ====================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+\#*\#
+.\#*
+
+# ==================== Testing ====================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# ==================== Type Checking ====================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ==================== Linting ====================
+.ruff_cache/
+
+# ==================== Documentation ====================
+site/
+docs/_build/
+
+# ==================== Jupyter Notebooks ====================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ==================== OS Generated ====================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ==================== Project Specific ====================
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite3
+
+# Secrets (NUNCA commitar!)
+.env
+.env.local
+.env.*.local
+secrets/
+*.pem
+*.key
+
+# Cache de modelos
+.cache/
+model_cache/
+
+# Outputs temporários
+output/
+tmp/
+temp/
+
+# ==================== Build ====================
+*.manifest
+*.spec
+
+.env
