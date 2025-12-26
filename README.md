@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
-> **Projeto educacional** demonstrando a evolução dos workflows de IA: do chatbot simples ao agente autônomo.
+> **Projeto** demonstrando a evolução dos workflows de IA: do chatbot simples ao agente autônomo.
 
 ## 📖 Sobre o Projeto
 
