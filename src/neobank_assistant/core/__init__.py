@@ -1,31 +1,22 @@
 """
-Core module
+Core Module
 ===========
-Configurações centrais e exceções do projeto.
-
+Configurações centralizadas e exceções customizadas.
 """
 
-from neobanck_assistant.core.config import Settings, get_settings
-from neobanck_assistant.core.exceptions import (
-    AgenticError,
-    AIAgentError,
-    ConfigurationError,
-    DataError,
-    NeoBanckError,
-    NonAgenticError,
-    ToolExecutionError,
-    WorkflowError,
+from neobank_assistant.core.config import Settings, get_settings
+from neobank_assistant.core.exceptions import (
+    NeoBankError,
+    ConfigurationError, 
+    ToolExecutionError, 
+    WorkflowError
 )
 
-__all__ = [
+__all__ =[
     "Settings",
     "get_settings",
-    "NeoBanckError",
+    "NeoBankError",
     "ConfigurationError",
     "ToolExecutionError",
-    "WorkflowError",
-    "NonAgenticError",
-    "AgenticError",
-    "AIAgentError",
-    "DataError",
+    "WorkflowError"
 ]
